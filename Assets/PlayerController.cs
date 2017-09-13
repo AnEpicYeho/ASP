@@ -6,33 +6,23 @@ using UnityEngine.AI;
 public class PlayerController : MonoBehaviour {
 	private NavMeshAgent navAgent;
 	private RaycastHit hit;
-	private bool isFollowing;
-	private GameObject target;
 
 	// Use this for initialization
 	void Start () {
 		navAgent = GetComponent<NavMeshAgent> ();
 	}	
 
+	void OnTriggerEnter(Collider other) {
+		Destroy(other.gameObject);
+	}
+
 	private void move(Vector3 position){
 		navAgent.SetDestination (position);
-		isFollowing = false;
 	}
-
-	private void follow(){
-		if (target != null) {
-			navAgent.SetDestination (target.transform.position);
-		} else {
-			isFollowing = false;
-		}
-
-	}
+		
 	
 	// Update is called once per frame
 	void FixedUpdate () {
-		if(isFollowing){
-			follow ();
-		}
 		
 		if (Input.GetMouseButton (0)) {
 			
@@ -41,9 +31,6 @@ public class PlayerController : MonoBehaviour {
 			if (Physics.Raycast (ray, out hit)) {
 				if (hit.transform.tag == "Terrain") {
 					move (hit.point);
-				} else {
-					isFollowing = true;
-					target = hit.transform.gameObject;
 				}
 
 			}
